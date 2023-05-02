@@ -22,7 +22,10 @@
 
 **Выполнение**
 
-**Все команды, выполненные в консоли, записаны утилитой script [otus_hw12_p1](https://github.com/hellolightSP/otus_hw12/blob/main/otus_hw12_p1)**
+**Все команды, выполненные в консоли, записаны утилитой script** [otus_hw12_p1](https://github.com/hellolightSP/otus_hw12/blob/main/otus_hw12_p1)
+[otus_hw12_p2_client](https://github.com/hellolightSP/otus_hw12/blob/main/otus_hw12_p2_client)
+[otus_hw12_p2_server](https://github.com/hellolightSP/otus_hw12/blob/main/otus_hw12_p2_server)
+
 
 **1. Запуск nginx на нестандартном порту 3-мя разными способами**
 
