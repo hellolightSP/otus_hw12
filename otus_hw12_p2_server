@@ -1,0 +1,123 @@
+Script started on 2023-05-02 16:17:01+03:00 [TERM="xterm-256color" TTY="/dev/pts/5" COLUMNS="203" LINES="56"]
+[?2004h]0;root@neon-desktop: /test_vm/otus-linux-adm/selinux_dns_problemsroot@neon-desktop:/test_vm/otus-linux-adm/selinux_dns_problems# [7mvagrant ssh ns01 [27mvagrant ssh ns01 
+[?2004lLast login: Tue May  2 13:08:05 2023 from 10.0.2.2
+]0;vagrant@ns01:~[?1034h[vagrant@ns01 ~]$ sudo -i 
+]0;root@ns01:~[?1034h[root@ns01 ~]# cat /var/log/audit/audit.log | audit2why
+type=AVC msg=audit(1683032642.511:1908): avc:  denied  { create } for  pid=5154 comm="isc-worker0000" name="named.ddns.lab.jnl" scontext=system_u:system_r:named_t:s0 tcontext=system_u:object_r:etc_t:s0 tclass=file permissive=0
+
+	Was caused by:
+		Missing type enforcement (TE) allow rule.
+
+		You can use audit2allow to generate a loadable module to allow this access.
+
+]0;root@ns01:~[root@ns01 ~]# ls -laZ /etc/named
+drw-rwx---. root named system_u:object_r:etc_t:s0       [0m[38;5;27m.[0m
+drwxr-xr-x. root root  system_u:object_r:etc_t:s0       [38;5;27m..[0m
+drw-rwx---. root named unconfined_u:object_r:etc_t:s0   [38;5;27mdynamic[0m
+-rw-rw----. root named system_u:object_r:etc_t:s0       named.56.168.192.rev
+-rw-rw----. root named system_u:object_r:etc_t:s0       named.dns.lab
+-rw-rw----. root named system_u:object_r:etc_t:s0       named.dns.lab.view1
+-rw-rw----. root named system_u:object_r:etc_t:s0       named.newdns.lab
+]0;root@ns01:~[root@ns01 ~]# sudo semanage fcontext -l | grep named
+/etc/rndc.*                                        regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/var/[01;31m[Knamed[m[K(/.*)?                                   all files          system_u:object_r:[01;31m[Knamed[m[K_zone_t:s0 
+/etc/unbound(/.*)?                                 all files          system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/var/run/bind(/.*)?                                all files          system_u:object_r:[01;31m[Knamed[m[K_var_run_t:s0 
+/var/log/[01;31m[Knamed[m[K.*                                   regular file       system_u:object_r:[01;31m[Knamed[m[K_log_t:s0 
+/var/run/[01;31m[Knamed[m[K(/.*)?                               all files          system_u:object_r:[01;31m[Knamed[m[K_var_run_t:s0 
+/var/[01;31m[Knamed[m[K/data(/.*)?                              all files          system_u:object_r:[01;31m[Knamed[m[K_cache_t:s0 
+/dev/xen/tapctrl.*                                 [01;31m[Knamed[m[K pipe         system_u:object_r:xenctl_t:s0 
+/var/run/unbound(/.*)?                             all files          system_u:object_r:[01;31m[Knamed[m[K_var_run_t:s0 
+/var/lib/softhsm(/.*)?                             all files          system_u:object_r:[01;31m[Knamed[m[K_cache_t:s0 
+/var/lib/unbound(/.*)?                             all files          system_u:object_r:[01;31m[Knamed[m[K_cache_t:s0 
+/var/[01;31m[Knamed[m[K/slaves(/.*)?                            all files          system_u:object_r:[01;31m[Knamed[m[K_cache_t:s0 
+/var/[01;31m[Knamed[m[K/chroot(/.*)?                            all files          system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/etc/[01;31m[Knamed[m[K\.rfc1912.zones                          regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/var/[01;31m[Knamed[m[K/dynamic(/.*)?                           all files          system_u:object_r:[01;31m[Knamed[m[K_cache_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/etc(/.*)?                        all files          system_u:object_r:etc_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/lib(/.*)?                        all files          system_u:object_r:lib_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/proc(/.*)?                       all files          <<None>>
+/var/[01;31m[Knamed[m[K/chroot/var/tmp(/.*)?                    all files          system_u:object_r:[01;31m[Knamed[m[K_cache_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/usr/lib(/.*)?                    all files          system_u:object_r:lib_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/etc/pki(/.*)?                    all files          system_u:object_r:cert_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/run/[01;31m[Knamed[m[K.*                      all files          system_u:object_r:[01;31m[Knamed[m[K_var_run_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/var/[01;31m[Knamed[m[K(/.*)?                  all files          system_u:object_r:[01;31m[Knamed[m[K_zone_t:s0 
+/usr/lib/systemd/system/[01;31m[Knamed[m[K.*                    regular file       system_u:object_r:[01;31m[Knamed[m[K_unit_file_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/var/run/dbus(/.*)?               all files          system_u:object_r:system_dbusd_var_run_t:s0 
+/usr/lib/systemd/system/unbound.*                  regular file       system_u:object_r:[01;31m[Knamed[m[K_unit_file_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/var/log/[01;31m[Knamed[m[K.*                  regular file       system_u:object_r:[01;31m[Knamed[m[K_log_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/var/run/[01;31m[Knamed[m[K.*                  all files          system_u:object_r:[01;31m[Knamed[m[K_var_run_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/var/[01;31m[Knamed[m[K/data(/.*)?             all files          system_u:object_r:[01;31m[Knamed[m[K_cache_t:s0 
+/usr/lib/systemd/system/[01;31m[Knamed[m[K-sdb.*                regular file       system_u:object_r:[01;31m[Knamed[m[K_unit_file_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/var/[01;31m[Knamed[m[K/slaves(/.*)?           all files          system_u:object_r:[01;31m[Knamed[m[K_cache_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/etc/[01;31m[Knamed[m[K\.rfc1912.zones         regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/var/[01;31m[Knamed[m[K/dynamic(/.*)?          all files          system_u:object_r:[01;31m[Knamed[m[K_cache_t:s0 
+/var/run/ndc                                       socket             system_u:object_r:[01;31m[Knamed[m[K_var_run_t:s0 
+/dev/gpmdata                                       [01;31m[Knamed[m[K pipe         system_u:object_r:gpmctl_t:s0 
+/dev/initctl                                       [01;31m[Knamed[m[K pipe         system_u:object_r:initctl_t:s0 
+/dev/xconsole                                      [01;31m[Knamed[m[K pipe         system_u:object_r:xconsole_device_t:s0 
+/usr/sbin/[01;31m[Knamed[m[K                                    regular file       system_u:object_r:[01;31m[Knamed[m[K_exec_t:s0 
+/etc/[01;31m[Knamed[m[K\.conf                                   regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/usr/sbin/lwresd                                   regular file       system_u:object_r:[01;31m[Knamed[m[K_exec_t:s0 
+/var/run/initctl                                   [01;31m[Knamed[m[K pipe         system_u:object_r:initctl_t:s0 
+/usr/sbin/unbound                                  regular file       system_u:object_r:[01;31m[Knamed[m[K_exec_t:s0 
+/usr/sbin/[01;31m[Knamed[m[K-sdb                                regular file       system_u:object_r:[01;31m[Knamed[m[K_exec_t:s0 
+/var/[01;31m[Knamed[m[K/[01;31m[Knamed[m[K\.ca                               regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/etc/[01;31m[Knamed[m[K\.root\.hints                            regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/dev                              directory          system_u:object_r:device_t:s0 
+/etc/rc\.d/init\.d/[01;31m[Knamed[m[K                           regular file       system_u:object_r:[01;31m[Knamed[m[K_initrc_exec_t:s0 
+/usr/sbin/[01;31m[Knamed[m[K-pkcs11                             regular file       system_u:object_r:[01;31m[Knamed[m[K_exec_t:s0 
+/etc/rc\.d/init\.d/unbound                         regular file       system_u:object_r:[01;31m[Knamed[m[K_initrc_exec_t:s0 
+/usr/sbin/unbound-anchor                           regular file       system_u:object_r:[01;31m[Knamed[m[K_exec_t:s0 
+/usr/sbin/[01;31m[Knamed[m[K-checkconf                          regular file       system_u:object_r:[01;31m[Knamed[m[K_checkconf_exec_t:s0 
+/usr/sbin/unbound-control                          regular file       system_u:object_r:[01;31m[Knamed[m[K_exec_t:s0 
+/var/[01;31m[Knamed[m[K/chroot_sdb/dev                          directory          system_u:object_r:device_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/var/log                          directory          system_u:object_r:var_log_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/dev/log                          socket             system_u:object_r:devlog_t:s0 
+/etc/rc\.d/init\.d/[01;31m[Knamed[m[K-sdb                       regular file       system_u:object_r:[01;31m[Knamed[m[K_initrc_exec_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/dev/null                         character device   system_u:object_r:null_device_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/dev/zero                         character device   system_u:object_r:zero_device_t:s0 
+/usr/sbin/unbound-checkconf                        regular file       system_u:object_r:[01;31m[Knamed[m[K_exec_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/dev/random                       character device   system_u:object_r:random_device_t:s0 
+/var/run/systemd/initctl/fifo                      [01;31m[Knamed[m[K pipe         system_u:object_r:initctl_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/etc/rndc\.key                    regular file       system_u:object_r:dnssec_t:s0 
+/usr/share/munin/plugins/[01;31m[Knamed[m[K                     regular file       system_u:object_r:services_munin_plugin_exec_t:s0 
+/var/[01;31m[Knamed[m[K/chroot_sdb/dev/null                     character device   system_u:object_r:null_device_t:s0 
+/var/[01;31m[Knamed[m[K/chroot_sdb/dev/zero                     character device   system_u:object_r:zero_device_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/etc/localtime                    regular file       system_u:object_r:locale_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/etc/[01;31m[Knamed[m[K\.conf                  regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/var/[01;31m[Knamed[m[K/chroot_sdb/dev/random                   character device   system_u:object_r:random_device_t:s0 
+/etc/[01;31m[Knamed[m[K\.caching-nameserver\.conf               regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/usr/lib/systemd/systemd-host[01;31m[Knamed[m[K                 regular file       system_u:object_r:systemd_host[01;31m[Knamed[m[K_exec_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/var/[01;31m[Knamed[m[K/[01;31m[Knamed[m[K\.ca              regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/etc/[01;31m[Knamed[m[K\.root\.hints           regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/etc/[01;31m[Knamed[m[K\.caching-nameserver\.conf regular file       system_u:object_r:[01;31m[Knamed[m[K_conf_t:s0 
+/var/[01;31m[Knamed[m[K/chroot/lib64 = /usr/lib
+/var/[01;31m[Knamed[m[K/chroot/usr/lib64 = /usr/lib
+]0;root@ns01:~[root@ns01 ~]# sudo chcon -R -t named_zone_t /etc/named
+]0;root@ns01:~[root@ns01 ~]# ls -laZ /etc/named
+drw-rwx---. root named system_u:object_r:named_zone_t:s0 [0m[38;5;27m.[0m
+drwxr-xr-x. root root  system_u:object_r:etc_t:s0       [38;5;27m..[0m
+drw-rwx---. root named unconfined_u:object_r:named_zone_t:s0 [38;5;27mdynamic[0m
+-rw-rw----. root named system_u:object_r:named_zone_t:s0 named.56.168.192.rev
+-rw-rw----. root named system_u:object_r:named_zone_t:s0 named.dns.lab
+-rw-rw----. root named system_u:object_r:named_zone_t:s0 named.dns.lab.view1
+-rw-rw----. root named system_u:object_r:named_zone_t:s0 named.newdns.lab
+]0;root@ns01:~[root@ns01 ~]# restorecon -v -R /etc/named
+restorecon reset /etc/named context system_u:object_r:named_zone_t:s0->system_u:object_r:etc_t:s0
+restorecon reset /etc/named/named.dns.lab context system_u:object_r:named_zone_t:s0->system_u:object_r:etc_t:s0
+restorecon reset /etc/named/named.dns.lab.view1 context system_u:object_r:named_zone_t:s0->system_u:object_r:etc_t:s0
+restorecon reset /etc/named/dynamic context unconfined_u:object_r:named_zone_t:s0->unconfined_u:object_r:etc_t:s0
+restorecon reset /etc/named/dynamic/named.ddns.lab context system_u:object_r:named_zone_t:s0->system_u:object_r:etc_t:s0
+restorecon reset /etc/named/dynamic/named.ddns.lab.view1 context system_u:object_r:named_zone_t:s0->system_u:object_r:etc_t:s0
+restorecon reset /etc/named/dynamic/named.ddns.lab.jnl context system_u:object_r:named_zone_t:s0->system_u:object_r:etc_t:s0
+restorecon reset /etc/named/named.newdns.lab context system_u:object_r:named_zone_t:s0->system_u:object_r:etc_t:s0
+restorecon reset /etc/named/named.56.168.192.rev context system_u:object_r:named_zone_t:s0->system_u:object_r:etc_t:s0
+]0;root@ns01:~[root@ns01 ~]# exit
+logout
+]0;vagrant@ns01:~[vagrant@ns01 ~]$ exit
+logout
+[?2004h]0;root@neon-desktop: /test_vm/otus-linux-adm/selinux_dns_problemsroot@neon-desktop:/test_vm/otus-linux-adm/selinux_dns_problems# exit
+[?2004lexit
+
+Script done on 2023-05-02 16:18:39+03:00 [COMMAND_EXIT_CODE="0"]
